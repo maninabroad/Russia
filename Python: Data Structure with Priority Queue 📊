@@ -1,0 +1,49 @@
+import heapq
+from dataclasses import dataclass
+from typing import Any, List
+
+@dataclass
+class PriorityItem:
+    priority: int
+    item: Any
+    
+    def __lt__(self, other):
+        return self.priority < other.priority
+
+class PriorityQueue:
+    """Min-Heap based priority queue with custom priority"""
+    
+    def __init__(self):
+        self.heap: List[PriorityItem] = []
+        self.size = 0
+    
+    def push(self, item: Any, priority: int):
+        """Add item with priority (lower number = higher priority)"""
+        heapq.heappush(self.heap, PriorityItem(priority, item))
+        self.size += 1
+    
+    def pop(self) -> Any:
+        """Remove and return the highest priority item"""
+        if not self.heap:
+            raise IndexError("Priority queue is empty")
+        self.size -= 1
+        return heapq.heappop(self.heap).item
+    
+    def peek(self) -> Any:
+        """View the highest priority item without removing"""
+        if not self.heap:
+            return None
+        return self.heap[0].item
+    
+    def is_empty(self) -> bool:
+        return self.size == 0
+
+# Usage example: Task scheduler
+pq = PriorityQueue()
+pq.push("Low priority task", 3)
+pq.push("Urgent task", 1)  # Highest priority
+pq.push("Medium task", 2)
+
+while not pq.is_empty():
+    task = pq.pop()
+    print(f"Processing: {task}")
